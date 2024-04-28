@@ -19,6 +19,12 @@ class ApiService:
         print('Running ApiService', file=stderr)
 
         # TODO: follow README.md instructions
-        web_response = get_todos(URL)
-        items_list = classify(web_response, identifier=IDENTIFIER, date=DATE)
-        storage(items_list, filepath=FILEPATH)
+        try:
+            web_response = get_todos(URL)
+            if web_response:
+                items_list = classify(web_response, identifier=IDENTIFIER, date=DATE)
+                storage(items_list, filepath=FILEPATH)
+            else:
+                raise Exception("No data")
+        except Exception as e:
+            print("General Error:", e)

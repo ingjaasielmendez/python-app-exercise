@@ -1,22 +1,43 @@
 import csv
 from src.Models.ItemClass import Item
 
+storage_status = False
+all_ok = False
+
 
 def storage(items_list, filepath="../../test_storage/"):
-    for item in items_list:
-        item_keys = []
-        item_file_name = filepath + item.name + ".csv"
-        for key, value in item.content.items():
-            item_keys.append(key)
-        save(item_file_name, item_keys, item.content)
-    print("Done")
+    global storage_status
+    try:
+        for item in items_list:
+            item_keys = []
+            item_file_name = filepath + item.name + ".csv"
+            for key, value in item.content.items():
+                item_keys.append(key)
+            save(item_file_name, item_keys, item.content)
+    except Exception as err:
+        print("Error storing data", err)
+        storage_status = False
+    if storage_status and all_ok:
+        print("CSV files created")
+    elif storage_status or all_ok:
+        print("Not all CSV files were created successfully")
+    else:
+        print("No CSV file has been created")
 
 
 def save(item_file_name, item_keys, item_content):
-    with open(item_file_name, 'w', newline='', encoding='utf-8') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=item_keys)
-        writer.writeheader()
-        writer.writerow(item_content)
+    global storage_status
+    global all_ok
+    try:
+        with open(item_file_name, 'w', newline='', encoding='utf-8') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=item_keys)
+            writer.writeheader()
+            writer.writerow(item_content)
+        storage_status = True
+        all_ok = True
+    except Exception as err:
+        print("Error saving data", err)
+        all_ok = False
 
 
 if __name__ == "__main__":

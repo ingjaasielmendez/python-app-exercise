@@ -5,10 +5,13 @@ items_list = []
 
 
 def classify(web_response, identifier='id', date='22_02_2022_'):
-    for content in web_response:
-        item_name = date + str(content[identifier])
-        create_object(content, item_name)
-    return items_list
+    try:
+        for content in web_response:
+            item_name = date + str(content[identifier])
+            create_object(content, item_name)
+        return items_list
+    except Exception as err:
+        print("Error processing data", err)
 
 
 def create_object(content, item_name):
